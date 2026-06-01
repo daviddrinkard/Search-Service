@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
 
-# Create Flask App
 app = Flask(__name__)
 
 # Sample Incident Records
@@ -17,7 +16,6 @@ def search_records():
     # Get Keyword From Request
     keyword = request.args.get('keyword')
 
-    # Return Error If Keyword Is Missing
     if not keyword:
         return jsonify({"error": "Keyword Is Required"}), 400
 
@@ -31,9 +29,7 @@ def search_records():
         if keyword.lower() in record["type"].lower():
             results.append(record)
 
-    # Return Matching Results
     return jsonify(results)
 
-# Run Microservice
 if __name__ == '__main__':
     app.run(port=5000)
