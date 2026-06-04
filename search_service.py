@@ -1,39 +1,31 @@
 from flask import Flask, request, jsonify
 
-# Create Flask App
 app = Flask(__name__)
 
-# Sample Incident Records
 records = [
-    {"id": 1, "type": "Unauthorized Access", "status": "Open"},
-    {"id": 2, "type": "Phishing Email", "status": "Closed"},
-    {"id": 3, "type": "Policy Violation", "status": "Under Review"}
+    {"id": 1, "employee_name": "John Smith", "type": "Unauthorized Access", "severity": "High", "status": "Open"},
+    {"id": 2, "employee_name": "Sarah Lee", "type": "Phishing Email", "severity": "Medium", "status": "Closed"},
+    {"id": 3, "employee_name": "Bob Johnson", "type": "Policy Violation", "severity": "Low", "status": "Under Review"}
 ]
 
-# Search Endpoint
-@app.route('/search', methods=['GET'])
+
+@app.route("/search", methods=["GET"])
 def search_records():
+    keyword = request.args.get("keyword")
 
-    # Get Keyword From Request
-    keyword = request.args.get('keyword')
-
-    # Return Error If Keyword Is Missing
     if not keyword:
-        return jsonify({"error": "Keyword Is Required"}), 400
+        return jsonify({"error": "Keyword is required"}), 400
 
-    # Store Matching Results
     results = []
 
-    # Search Through Records
     for record in records:
+        for value in record.values():
+            if keyword.lower() in str(value).lower():
+                results.append(record)
+                break
 
-        # Check If Keyword Matches Record Type
-        if keyword.lower() in record["type"].lower():
-            results.append(record)
-
-    # Return Matching Results
     return jsonify(results)
 
-# Run Microservice
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app.run(port=5000)
